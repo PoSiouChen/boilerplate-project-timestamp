@@ -30,3 +30,35 @@ app.get("/api/hello", function (req, res) {
 var listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
+
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+app.get('/api/:date?', function (req, res) {
+  let date_input = req.params.date;
+  let date = new Date();
+  //console.log("req: " + date_input);
+  //console.log("new Date: " + date);
+
+  if(isNumeric(date_input)) {
+    date_input = parseInt(date_input);
+    //console.log("date_input: " + date_input);
+  }
+
+  if(date_input !== undefined) {
+    date = new Date(date_input);
+    //console.log("date: " + date);
+    if (date.toString() === "Invalid Date") {
+      res.json({ error: "Invalid Date" });
+    }
+  }
+
+  res.json({ 
+    unix: date.getTime(), 
+    utc: date.toUTCString() 
+  });
+
+});
+
